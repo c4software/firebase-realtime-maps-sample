@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "deploy": "npm run build && firebase deploy -P production",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
