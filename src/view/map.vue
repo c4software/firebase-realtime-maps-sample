@@ -5,7 +5,7 @@
     :center="center"
   >
     <l-tile-layer :url="url"></l-tile-layer>
-    <l-control position="bottomleft">
+    <l-control v-if="!locating">
       <button @click="getUserLocation">
         Localiser moi
       </button>
@@ -18,11 +18,17 @@ import { LMap, LTileLayer, LMarker, LControl } from "vue2-leaflet";
 
 export default {
   name: "myMap",
+  firebase: function() {
+    return {
+      anArray: this.$db.ref("markerList")
+    };
+  },
   data() {
     return {
       url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
       zoom: 16,
-      center: [47.472092, -0.550589]
+      center: [47.472092, -0.550589],
+      locating: false
     };
   },
   components: {
@@ -34,11 +40,14 @@ export default {
   methods: {
     getUserLocation() {
       if ("geolocation" in navigator) {
+        this.locating = true;
         navigator.geolocation.getCurrentPosition(
           position => {
+            this.locating = false;
             this.center = [position.coords.latitude, position.coords.longitude];
           },
           error => {
+            this.locating = false;
             console.error(error);
           }
         );
