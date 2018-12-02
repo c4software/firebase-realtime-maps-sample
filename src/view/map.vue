@@ -3,13 +3,21 @@
     id="map"
     :zoom="zoom"
     :center="center"
+    @click="addMarker"
   >
+    <l-marker
+      v-for="marker in markerList"
+      :key="marker['.key']"
+      :lat-lng="marker['.value']"
+      @click="() => removeMarker(marker['.key'])"
+    ></l-marker>
+
     <l-tile-layer :url="url"></l-tile-layer>
+
     <l-control v-if="!locating">
-      <button @click="getUserLocation">
-        Localiser moi
-      </button>
+      <button @click.stop="getUserLocation">Localiser moi</button>
     </l-control>
+
   </l-map>
 </template>
 
@@ -20,7 +28,7 @@ export default {
   name: "myMap",
   firebase: function() {
     return {
-      anArray: this.$db.ref("markerList")
+      markerList: this.$db.ref("/markerList/")
     };
   },
   data() {
@@ -38,6 +46,15 @@ export default {
     LControl
   },
   methods: {
+    addMarker(position) {
+      this.$firebaseRefs.markerList.push([
+        position.latlng.lat,
+        position.latlng.lng
+      ]);
+    },
+    removeMarker(markerKey) {
+      this.$firebaseRefs.markerList.child(markerKey).remove();
+    },
     getUserLocation() {
       if ("geolocation" in navigator) {
         this.locating = true;
