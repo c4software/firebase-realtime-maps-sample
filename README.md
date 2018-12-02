@@ -2,7 +2,7 @@
 
 Sample application to show the Realtime aspect of Firebase with Leaflet and realtime marker sync.
 
-[Maps Sample](./carte_marker.png)
+![Maps Sample](./carte_marker.png)
 
 ## Project setup
 
