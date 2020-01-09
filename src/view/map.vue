@@ -1,19 +1,10 @@
 <template>
-  <l-map
-    id="map"
-    :zoom="zoom"
-    :center="center"
-    @click="addMarker"
-  >
-    <l-marker
-      v-for="marker in markerList"
-      :key="marker['.key']"
-      :lat-lng="marker['.value']"
-      @click="() => removeMarker(marker['.key'])"
-    ></l-marker>
+  <l-map id="map" :zoom="zoom" :center="center" @click="addMarker">
 
+    <l-marker v-for="(marker,i) in markerList" :key="i" :lat-lng="marker" @click="() => removeMarker(marker['.key'])"></l-marker>
+    
     <l-tile-layer :url="url"></l-tile-layer>
-
+    
     <l-control v-if="!locating">
       <button @click.stop="getUserLocation">Localiser moi</button>
     </l-control>
@@ -26,13 +17,14 @@ import { LMap, LTileLayer, LMarker, LControl } from "vue2-leaflet";
 
 export default {
   name: "myMap",
-  firebase: function() {
+  firebase() {
     return {
       markerList: this.$db.ref("/markerList/")
     };
   },
   data() {
     return {
+      markerList: [],
       url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
       zoom: 16,
       center: [47.472092, -0.550589],
